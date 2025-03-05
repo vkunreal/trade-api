@@ -1,5 +1,7 @@
 ﻿using API.Database;
 using API.Models;
+using API.Repositories;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,30 +12,74 @@ namespace API.Controllers
     public class UsersController: ControllerBase
     {
         private readonly Context _context;
+        private readonly UsersRepository _usersRepository;
 
         public UsersController(Context context) {
             _context = context;
+            _usersRepository = new UsersRepository(context);
         }
 
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<User>>> GetAll() {
+        //    return await _context.Users.ToListAsync();
+        //}
+
+        //[HttpPost]
+        //public async Task<ActionResult<User>> CreateUser ()
+        //{
+
+        //    _context.Users.Add(user);
+
+        //    await _context.SaveChangesAsync();
+
+        //    return Ok(user);
+        //}
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetAll() {
-            return await _context.Users.ToListAsync();
+        public async Task<ActionResult<IEnumerable<User>>> GetAllUsers ()
+        {
+            return await _usersRepository.GetAll();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<User?>> GetUser (Guid id)
+        {
+            return await _usersRepository.GetById(id);
         }
 
         [HttpPost]
-        public async Task<ActionResult<User>> CreateUser ()
+        public async Task<ActionResult<User>> AddUser(User newUser)
         {
-            User user = new User() { 
-                Name = "User",
-                Surname = "Surname User",
-                Email = "Email"
-            };
+            User user = await _usersRepository.Add(newUser);
 
-            _context.Users.Add(user);
+            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+        }
 
-            await _context.SaveChangesAsync();
+        [HttpPut("{id}")]
+        public async Task<ActionResult<User>> ChangeUser (Guid id, User user)
+        {
+            if (id != user.Id)
+            {
+                return BadRequest();
+            }
 
-            return Ok(user);
+            await _usersRepository.Update(user);
+
+            return user;
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteUser (Guid id)
+        {
+            User? user = await _usersRepository.GetById(id);
+
+            if (user != null)
+            {
+                await _usersRepository.Delete(id);
+                return NoContent();
+            }
+
+            return NotFound();
         }
     }
 }
