@@ -1,0 +1,29 @@
+services:
+  trade.api:
+    image: ${DOCKER_REGISTRY-}tradeapi
+    container_name: trade.api
+    build:
+      context: .
+      dockerfile: Trade.Api/Dockerfile
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    depends_on:
+      - trade.database
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+
+  trade.database:
+    image: postgres:13
+    container_name: trade.database
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "tradedb"
+    ports:
+      - "5432:5432"
+    volumes:
+      - trade_db:/var/lib/postgresql/data
+
+volumes:
+  trade_db:
