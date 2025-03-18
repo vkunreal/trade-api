@@ -32,10 +32,11 @@ namespace Trade.Infrastructure.Repositories
         public async Task<User?> Update(User user)
         {
             User? existUser = await _context.Users.FindAsync(user.Id);
-            user.UpdatedAt = DateTime.Now.ToUniversalTime();
 
             if (existUser != null)
             {
+                user.CreatedAt = existUser.CreatedAt;
+                user.UpdatedAt = DateTime.UtcNow;
                 _context.Entry(existUser).CurrentValues.SetValues(user);
                 await _context.SaveChangesAsync();
                 return user;

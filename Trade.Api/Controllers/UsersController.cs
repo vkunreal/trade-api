@@ -1,33 +1,33 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Trade.Api;
 using Trade.Domain;
 using Trade.Infrastructure;
 using Trade.Infrastructure.Repositories;
 
 namespace Trade.Api.Controllers
 {
+    /// <inheritdoc />
     [ApiController]
     [Route("/api/users/")]
-    public class UsersController : ControllerBase
+    public class UsersController(Context context) : ControllerBase, IUsersFacade
     {
-        private readonly UsersRepository _usersRepository;
+        private readonly UsersRepository _usersRepository = new UsersRepository(context);
 
-        public UsersController(Context context)
-        {
-            _usersRepository = new UsersRepository(context);
-        }
-
+        /// <inheritdoc />
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
         {
             return await _usersRepository.GetAll();
         }
 
+        /// <inheritdoc />
         [HttpGet("{id}")]
         public async Task<ActionResult<User?>> GetUser(Guid id)
         {
             return await _usersRepository.GetById(id);
         }
 
+        /// <inheritdoc />
         [HttpPost]
         public async Task<ActionResult<User>> AddUser(AddUserDTO newUser)
         {
@@ -38,6 +38,7 @@ namespace Trade.Api.Controllers
             return CreatedAtAction("GetUser", new { id = user.Id }, user);
         }
 
+        /// <inheritdoc />
         [HttpPut("{id}")]
         public async Task<ActionResult<User>> ChangeUser(Guid id, User user)
         {
@@ -51,6 +52,7 @@ namespace Trade.Api.Controllers
             return user;
         }
 
+        /// <inheritdoc />
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteUser(Guid id)
         {

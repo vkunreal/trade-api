@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   trade.api:
     image: ${DOCKER_REGISTRY-}tradeapi
@@ -12,6 +14,8 @@ services:
       - trade.database
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - postgres
 
   trade.database:
     image: postgres:13
@@ -24,6 +28,25 @@ services:
       - "5432:5432"
     volumes:
       - trade_db:/var/lib/postgresql/data
+    networks:
+      - postgres
+
+  trade.pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: trade.pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    depends_on:
+      - trade.database
+    networks:
+      - postgres
 
 volumes:
   trade_db:
+
+networks:
+    postgres:
+        driver: bridge
