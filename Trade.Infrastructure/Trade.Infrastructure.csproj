@@ -24,4 +24,8 @@
     <ProjectReference Include="..\Trade.Domain\Trade.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

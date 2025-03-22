@@ -1,11 +1,6 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Trade.Domain
+﻿namespace Trade.Domain
 {
-    /// <summary>
-    /// Заказ
-    /// </summary>
-    public class Order
+    public class OrderResultDTO
     {
         /// <summary>
         /// ID
@@ -15,12 +10,12 @@ namespace Trade.Domain
         /// <summary>
         /// ID пользователя
         /// </summary>
-        public Guid UserId { get; set; }
+        public OrderUserDTO User { get; set; }
 
         /// <summary>
         /// ID использованного адреса
         /// </summary>
-        public Guid AddressId { get; set; }
+        public Address Address { get; set; }
 
         /// <summary>
         /// Комментарий к заказу
@@ -42,20 +37,9 @@ namespace Trade.Domain
         /// </summary>
         public DateTime UpdatedAt { get; set; }
 
-        [JsonIgnore]
-        public virtual User User { get; set; }
-        [JsonIgnore]
-        public virtual Address Address { get; set; }
-        [JsonIgnore]
-        public virtual ICollection<OrderItem> OrderItems { get; set; }
-
-        public Order(Guid userId, Guid addressId, string comment, OrderStatus status)
-        {
-            Id = new();
-            UserId = userId;
-            AddressId = addressId;
-            Comment = comment;
-            Status = status;
-        }
+        /// <summary>
+        /// Список товаров
+        /// </summary>
+        public List<OrderResultProductDTO> Products { get; set; }
     }
 }

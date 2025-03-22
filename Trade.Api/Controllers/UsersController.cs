@@ -1,66 +1,98 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Trade.Api;
 using Trade.Domain;
 using Trade.Infrastructure;
 using Trade.Infrastructure.Repositories;
 
 namespace Trade.Api.Controllers
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// Контроллер для управления пользователями
+    /// </summary>
     [ApiController]
     [Route("/api/users/")]
-    public class UsersController(Context context) : ControllerBase, IUsersFacade
+    public class UsersController(Context _context) : ControllerBase
     {
-        private readonly UsersRepository _usersRepository = new UsersRepository(context);
+        private readonly UsersRepository _usersRepository = new (_context);
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Получает список пользователей
+        /// </summary>
+        /// <returns>Список пользователей</returns>
+        /// <response code="200">Возвращает массив пользователей</response>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
         {
             return await _usersRepository.GetAll();
         }
 
-        /// <inheritdoc />
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User?>> GetUser(Guid id)
+        /// <summary>
+        /// Получает пользователя по ID
+        /// </summary>
+        /// <param name="userId">ID пользователя</param>
+        /// <returns>Объект пользователя</returns>
+        /// <response code="200">Возвращает объект пользователя по ID</response>
+        /// <response code="404">Пользователь по такому ID не найден</response>
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<User?>> GetUser(Guid userId)
         {
-            return await _usersRepository.GetById(id);
+            return await _usersRepository.GetById(userId);
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Добавляет нового пользователя
+        /// </summary>
+        /// <param name="newUser">Данные для нового пользователя</param>
+        /// <returns>Объект пользователя</returns>
+        /// <response code="201">Возвращает объект пользователя по ID</response>
         [HttpPost]
-        public async Task<ActionResult<User>> AddUser(AddUserDTO newUser)
+        public async Task<ActionResult<User>> AddUser([FromBody] AddUserDTO newUser)
         {
-            User user = new User(newUser.FirstName, newUser.LastName, newUser.Email);
+            User user = await _usersRepository.Add(newUser);
 
-            await _usersRepository.Add(user);
-
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            return CreatedAtAction(nameof(GetUser), new { userId = user.Id }, user);
         }
 
-        /// <inheritdoc />
-        [HttpPut("{id}")]
-        public async Task<ActionResult<User>> ChangeUser(Guid id, User user)
+        /// <summary>
+        /// Изменяет данные пользователя
+        /// </summary>
+        /// <param name="userId">ID пользователя</param>
+        /// <param name="user">Новые данные для пользователя</param>
+        /// <returns>Объект пользователя</returns>
+        /// <response code="200">Возвращает обновленный объект пользователя</response>
+        /// <response code="404">Пользователь по такому ID не найден</response>
+        [HttpPut("{userId}")]
+        public async Task<ActionResult<User>> ChangeUser(Guid userId, [FromBody] ChangeUserDTO changeUser)
         {
-            if (id != user.Id)
+            if (userId != changeUser.Id)
             {
-                return BadRequest();
+                return BadRequest(userId);
             }
 
-            await _usersRepository.Update(user);
+            User? updatedUser = await _usersRepository.Update(changeUser);
 
-            return user;
+            if (updatedUser == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(updatedUser);
         }
 
-        /// <inheritdoc />
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteUser(Guid id)
+        /// <summary>
+        /// Удаляет пользователя
+        /// </summary>
+        /// <param name="userId">ID пользователя</param>
+        /// <returns></returns>
+        /// <response code="204">Пользователь удален</response>
+        /// <response code="404">Пользователь по такому ID не найден</response>
+        [HttpDelete("{userId}")]
+        public async Task<ActionResult> DeleteUser(Guid userId)
         {
-            User? user = await _usersRepository.GetById(id);
+            User? user = await _usersRepository.GetById(userId);
 
             if (user != null)
             {
-                await _usersRepository.Delete(id);
+                await _usersRepository.Delete(userId);
                 return NoContent();
             }
 

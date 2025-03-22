@@ -1,4 +1,6 @@
-﻿namespace Trade.Domain
+﻿using System.Text.Json.Serialization;
+
+namespace Trade.Domain
 {
     /// <summary>
     /// Пользователь
@@ -35,7 +37,9 @@
         /// </summary>
         public DateTime UpdatedAt { get; set; }
 
+        [JsonIgnore]
         public virtual ICollection<Order> Orders { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Address> Addresses { get; set; }
 
         public User(string firstName, string lastName, string email)

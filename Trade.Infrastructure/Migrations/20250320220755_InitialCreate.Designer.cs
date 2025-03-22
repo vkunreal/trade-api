@@ -12,8 +12,8 @@ using Trade.Infrastructure;
 namespace Trade.Infrastructure.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20250318233253_InitialAddresses")]
-    partial class InitialAddresses
+    [Migration("20250320220755_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,12 +43,11 @@ namespace Trade.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("FlatNumber")
-                        .HasColumnType("text");
+                    b.Property<int?>("FlatNumber")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("HouseNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("HouseNumber")
+                        .HasColumnType("integer");
 
                     b.Property<string>("PostalCode")
                         .IsRequired()
@@ -87,6 +86,9 @@ namespace Trade.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");

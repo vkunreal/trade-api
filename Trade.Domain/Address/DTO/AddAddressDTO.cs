@@ -1,50 +1,46 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Trade.Domain
 {
     /// <summary>
-    /// Адрес пользователя
+    /// DTO Создания адреса пользователя
     /// </summary>
-    public class Address
+    public class AddAddressDTO
     {
-        /// <summary>
-        /// ID
-        /// </summary>
-        public Guid Id { get; set; }
-
-        /// <summary>
-        /// ID пользователя
-        /// </summary>
-        public Guid UserId { get; set; }
-
         /// <summary>
         /// Страна
         /// </summary>
+        [Required(ErrorMessage = "Country is required")]
         public string Country { get; set; }
 
         /// <summary>
         /// Регион/Область
         /// </summary>
+        [Required(ErrorMessage = "Region is required")]
         public string Region { get; set; }
 
         /// <summary>
         /// Город
         /// </summary>
+        [Required(ErrorMessage = "City is required")]
         public string City { get; set; }
 
         /// <summary>
         /// Почтовый индекс
         /// </summary>
+        [Required(ErrorMessage = "PostalCode is required")]
         public string PostalCode { get; set; }
 
         /// <summary>
         /// Улица
         /// </summary>
+        [Required(ErrorMessage = "Street is required")]
         public string Street { get; set; }
 
         /// <summary>
         /// Номер дома
         /// </summary>
+        [Range(0, int.MaxValue, ErrorMessage = "HouseNumber must be higher or equals than 0")]
         public int HouseNumber { get; set; }
 
         /// <summary>
@@ -56,23 +52,5 @@ namespace Trade.Domain
         /// Комментарий к адресу
         /// </summary>
         public string AddressDescription { get; set; }
-
-        public Address(Guid userId, string country, string region, string city, string postalCode, string street, int houseNumber, int? flatNumber, string addressDescription)
-        {
-            Id = new();
-            UserId = userId;
-
-            Country = country;
-            Region = region;
-            City = city;
-            PostalCode = postalCode;
-            Street = street;
-            HouseNumber = houseNumber;
-            FlatNumber = flatNumber;
-            AddressDescription = addressDescription;
-        }
-
-        [JsonIgnore]
-        public virtual User User { get; set; }
     }
 }

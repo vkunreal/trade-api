@@ -3,7 +3,7 @@ using Trade.Domain;
 
 namespace Trade.Infrastructure.Repositories
 {
-    public class UsersRepository : IUsersRepository
+    public class UsersRepository
     {
         private readonly Context _context;
 
@@ -22,24 +22,30 @@ namespace Trade.Infrastructure.Repositories
             return await _context.Users.FindAsync(userId);
         }
 
-        public async Task<User> Add(User user)
+        public async Task<User> Add(AddUserDTO newUser)
         {
+            User user = new User(newUser.FirstName, newUser.LastName, newUser.Email);
+
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
+
             return user;
         }
 
-        public async Task<User?> Update(User user)
+        public async Task<User?> Update(ChangeUserDTO user)
         {
             User? existUser = await _context.Users.FindAsync(user.Id);
 
             if (existUser != null)
             {
-                user.CreatedAt = existUser.CreatedAt;
-                user.UpdatedAt = DateTime.UtcNow;
-                _context.Entry(existUser).CurrentValues.SetValues(user);
+                existUser.FirstName = user.FirstName;
+                existUser.LastName = user.LastName;
+                existUser.Email = user.Email;
+                existUser.UpdatedAt = DateTime.UtcNow;
+
                 await _context.SaveChangesAsync();
-                return user;
+
+                return existUser;
             }
 
             return null;

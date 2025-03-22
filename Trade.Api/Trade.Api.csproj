@@ -22,8 +22,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets"
-      Version="1.21.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageReference Include="SauceControl.InheritDoc" Version="2.0.2">
       <PrivateAssets>all</PrivateAssets>
@@ -37,8 +36,8 @@
     <ProjectReference Include="..\Trade.Infrastructure\Trade.Infrastructure.csproj" />
   </ItemGroup>
 
-  <Target Name="InheritDoc" AfterTargets="PostBuildEvent" Condition="$(GenerateDocumentationFile)">
-    <Exec Command="InheritDoc -o" IgnoreExitCode="True" ContinueOnError="true" />
+  <Target Name="InheritDocTool" AfterTargets="PostBuildEvent" Condition="$(GenerateDocumentationFile)">
+    <Exec Command="InheritDocTool -o" IgnoreExitCode="True" ContinueOnError="true" />
   </Target>
 
 </Project>

@@ -1,4 +1,6 @@
-﻿namespace Trade.Domain
+﻿using System.Text.Json.Serialization;
+
+namespace Trade.Domain
 {
     /// <summary>
     /// Товар
@@ -31,6 +33,11 @@
         public decimal Discount { get; set; }
 
         /// <summary>
+        /// Итоговая цена
+        /// </summary>
+        public decimal TotalPrice => Math.Round(Price * (1 - Discount / 100), 2);
+
+        /// <summary>
         /// Количество
         /// </summary>
         public int Count { get; set; }
@@ -45,6 +52,7 @@
         /// </summary>
         public DateTime UpdatedAt { get; set; }
 
+        [JsonIgnore]
         public virtual ICollection<OrderItem> OrderItems { get; set; }
 
         public Product (string title, string description, decimal price, decimal discount, int count)
