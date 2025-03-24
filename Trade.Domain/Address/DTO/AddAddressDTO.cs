@@ -10,37 +10,37 @@ namespace Trade.Domain
         /// <summary>
         /// Страна
         /// </summary>
-        [Required(ErrorMessage = "Country is required")]
+        [Required(ErrorMessage = "Country обязательное поле")]
         public string Country { get; set; }
 
         /// <summary>
         /// Регион/Область
         /// </summary>
-        [Required(ErrorMessage = "Region is required")]
+        [Required(ErrorMessage = "Region обязательное поле")]
         public string Region { get; set; }
 
         /// <summary>
         /// Город
         /// </summary>
-        [Required(ErrorMessage = "City is required")]
+        [Required(ErrorMessage = "City обязательное поле")]
         public string City { get; set; }
 
         /// <summary>
         /// Почтовый индекс
         /// </summary>
-        [Required(ErrorMessage = "PostalCode is required")]
+        [Required(ErrorMessage = "PostalCode обязательное поле")]
         public string PostalCode { get; set; }
 
         /// <summary>
         /// Улица
         /// </summary>
-        [Required(ErrorMessage = "Street is required")]
+        [Required(ErrorMessage = "Street обязательное поле")]
         public string Street { get; set; }
 
         /// <summary>
         /// Номер дома
         /// </summary>
-        [Range(0, int.MaxValue, ErrorMessage = "HouseNumber must be higher or equals than 0")]
+        [Range(0, int.MaxValue, ErrorMessage = "HouseNumber должен быть больше или равен 0")]
         public int HouseNumber { get; set; }
 
         /// <summary>
@@ -51,6 +51,6 @@ namespace Trade.Domain
         /// <summary>
         /// Комментарий к адресу
         /// </summary>
-        public string AddressDescription { get; set; }
+        public string AddressDescription { get; set; } = string.Empty;
     }
 }

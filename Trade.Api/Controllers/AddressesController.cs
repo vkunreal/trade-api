@@ -15,8 +15,9 @@ namespace Trade.Api.Controllers
         private readonly AddressesRepository _addressesRepository = new(_context);
         private readonly UsersRepository _usersRepository = new(_context);
 
-        private readonly string USER_ERROR_MESSAGE = "User is not found";
-        private readonly string ADDRESS_ID_ERROR_MESSAGE = "Address ID doesn't match";
+        private readonly string USER_ERROR_MESSAGE = "Пользователь по такому ID не найден";
+        private readonly string ADDRESS_ID_ERROR_MESSAGE = "ID в URL и в теле запроса не совпадают";
+        private readonly string ADDRESS_NOT_FOUND_ERROR_MESSAGE = "Адрес по такому ID не найден";
 
         /// <summary>
         /// Получает список адресов пользователя
@@ -49,7 +50,7 @@ namespace Trade.Api.Controllers
 
             if (address == null || address.UserId != userId)
             {
-                return NotFound();
+                return NotFound(ADDRESS_NOT_FOUND_ERROR_MESSAGE);
             }
 
             return address;
@@ -62,6 +63,7 @@ namespace Trade.Api.Controllers
         /// <param name="newAddress">Данные для нового адреса пользователя</param>
         /// <returns>Объект адреса пользователя</returns>
         /// <response code="201">Возвращает объект адреса пользователя</response>
+        /// <response code="404">Пользователь с таким ID не найден</response>
         [HttpPost]
         public async Task<ActionResult<Address>> AddAddress(Guid userId, [FromBody] AddAddressDTO newAddress)
         {
@@ -83,7 +85,9 @@ namespace Trade.Api.Controllers
         /// <param name="changeAddress">Новые данные для адреса пользователя</param>
         /// <returns>Объект адреса пользователя</returns>
         /// <response code="200">Возвращает обновленный объект адреса пользователя</response>
+        /// <response code="400">ID в URL и в теле запроса не совпадают</response>
         /// <response code="404">Адрес пользователя по такому ID не найден</response>
+        /// <response code="404">Пользователь с таким ID не найден</response>
         [HttpPut("{addressId}")]
         public async Task<ActionResult<Address>> ChangeAddress(Guid userId, Guid addressId, [FromBody] ChangeAddressDTO changeAddress)
         {
@@ -101,7 +105,7 @@ namespace Trade.Api.Controllers
 
             if (updatedAddress == null)
             {
-                return NotFound();
+                return NotFound(ADDRESS_NOT_FOUND_ERROR_MESSAGE);
             }
 
             return Ok(updatedAddress);
@@ -118,11 +122,6 @@ namespace Trade.Api.Controllers
         [HttpDelete("{addressId}")]
         public async Task<ActionResult> DeleteAddress(Guid userId, Guid addressId)
         {
-            if ((await ValidateUser(userId)).Result is NotFoundResult)
-            {
-                return NotFound(USER_ERROR_MESSAGE);
-            }
-
             Address? address = await _addressesRepository.GetById(addressId);
 
             if (address != null)
@@ -131,7 +130,7 @@ namespace Trade.Api.Controllers
                 return NoContent();
             }
 
-            return NotFound();
+            return NotFound(ADDRESS_NOT_FOUND_ERROR_MESSAGE);
         }
 
         private async Task<ActionResult<User?>> ValidateUser(Guid userId)

@@ -16,58 +16,79 @@ namespace Trade.Infrastructure.Repositories
         {
 
             return await _context.Orders
-                .Include(o => o.Address)
-                .Include(o => o.User)
-                .Include(o => o.OrderItems)
+                .Include(order => order.Address)
+                .Include(order => order.User)
+                .Include(order => order.OrderItems)
                     .ThenInclude(oi => oi.Product)
-                .Select(o => new OrderResultDTO
+                .Select(order => new OrderResultDTO
                 {
-                    Id = o.Id,
+                    Id = order.Id,
                     User = new OrderUserDTO
                     {
-                        Id = o.User.Id,
-                        FirstName = o.User.FirstName,
-                        LastName = o.User.LastName,
-                        Email = o.User.Email,
+                        Id = order.User.Id,
+                        FirstName = order.User.FirstName,
+                        LastName = order.User.LastName,
+                        Email = order.User.Email,
                     },
-                    Address = new Address(
-                        o.Address.UserId,
-                        o.Address.Country,
-                        o.Address.Region,
-                        o.Address.City,
-                        o.Address.PostalCode,
-                        o.Address.Street,
-                        o.Address.HouseNumber,
-                        o.Address.FlatNumber,
-                        o.Address.AddressDescription),
-                    Comment = o.Comment,
-                    Status = o.Status,
-                    CreatedAt = o.CreatedAt,
-                    UpdatedAt = o.UpdatedAt,
-                    Products = o.OrderItems.Select(oi => new OrderResultProductDTO
+                    Address = order.Address,
+                    Comment = order.Comment,
+                    Status = order.GetStatusName(),
+                    TotalPrice = order.TotalPrice,
+                    CreatedAt = order.CreatedAt,
+                    UpdatedAt = order.UpdatedAt,
+                    Products = order.OrderItems.Select(orderItem => new OrderResultProductDTO
                     {
-                        Id = oi.Product.Id,
-                        Title = oi.Product.Title,
-                        Description = oi.Product.Description,
-                        Price = oi.Product.Price,
-                        Discount = oi.Product.Discount
+                        Id = orderItem.Product.Id,
+                        Title = orderItem.Product.Title,
+                        Description = orderItem.Product.Description,
+                        Price = orderItem.Product.Price,
+                        Discount = orderItem.Product.Discount
                     }).ToList()
                 }).ToListAsync();
         }
 
-        public async Task<Order?> GetById(Guid orderId)
+        public async Task<OrderResultDTO?> GetById(Guid orderId)
         {
 
-            return await _context.Orders
-            .Include(o => o.Address)
-            .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Product)
-             .FirstOrDefaultAsync(o => o.Id == orderId);
+            Order? order = await _context.Orders
+                .Include(order => order.Address)
+                .Include(order => order.User)
+                .Include(order => order.OrderItems)
+                    .ThenInclude(orderItem => orderItem.Product)
+                .FirstOrDefaultAsync(order => order.Id == orderId);
+
+            if (order == null) return null;
+
+            return new OrderResultDTO
+            {
+                Id = order.Id,
+                User = new OrderUserDTO
+                {
+                    Id = order.User.Id,
+                    FirstName = order.User.FirstName,
+                    LastName = order.User.LastName,
+                    Email = order.User.Email,
+                },
+                Address = order.Address,
+                Comment = order.Comment,
+                Status = order.GetStatusName(),
+                TotalPrice = order.TotalPrice,
+                CreatedAt = order.CreatedAt,
+                UpdatedAt = order.UpdatedAt,
+                Products = order.OrderItems.Select(oi => new OrderResultProductDTO
+                {
+                    Id = oi.Product.Id,
+                    Title = oi.Product.Title,
+                    Description = oi.Product.Description,
+                    Price = oi.Product.Price,
+                    Discount = oi.Product.Discount
+                }).ToList()
+            };
         }
 
-        public async Task<Order> Add(AddOrderDTO newOrder)
+        public async Task<OrderResultDTO?> Add(AddOrderDTO newOrder)
         {
-            Order order = new(newOrder.UserId, newOrder.AddressId, newOrder.Comment, newOrder.Status);
+            Order order = new(newOrder.UserId, newOrder.AddressId, newOrder.Comment);
 
             _context.Orders.Add(order);
 
@@ -82,7 +103,53 @@ namespace Trade.Infrastructure.Repositories
 
             await _context.SaveChangesAsync();
 
-            return order;
+            return await GetById(order.Id);
+        }
+
+        public async Task<OrderResultDTO?> Update(ChangeOrderDTO changeOrder)
+        {
+            Order? existOrder = await _context.Orders.FindAsync(changeOrder.Id);
+
+            if (existOrder != null)
+            {
+                existOrder.AddressId = changeOrder.AddressId;
+                existOrder.Comment = changeOrder.Comment;
+                existOrder.UpdatedAt = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
+
+                return await GetById(existOrder.Id);
+            }
+
+            return null;
+        }
+
+        public async Task<OrderResultDTO?> UpdateOrderStatus(Guid orderId, OrderStatus orderStatus)
+        {
+            Order? existOrder = await _context.Orders.FindAsync(orderId);
+
+            if (existOrder != null)
+            {
+                existOrder.Status = orderStatus;
+                existOrder.UpdatedAt = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
+
+                return await GetById(existOrder.Id);
+            }
+
+            return null;
+        }
+
+        public async Task Delete(Guid orderId)
+        {
+            Order? order = await _context.Orders.FindAsync(orderId);
+
+            if (order != null)
+            {
+                _context.Remove(order);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

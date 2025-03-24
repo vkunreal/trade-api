@@ -12,7 +12,7 @@ using Trade.Infrastructure;
 namespace Trade.Infrastructure.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20250320220755_InitialCreate")]
+    [Migration("20250324225021_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

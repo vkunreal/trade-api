@@ -10,31 +10,31 @@ namespace Trade.Domain
         /// <summary>
         /// Название
         /// </summary>
-        [Required(ErrorMessage = "Title is required")]
+        [Required(ErrorMessage = "Title обязательное поле")]
         public string Title { get; set; }
 
         /// <summary>
         /// Описание
         /// </summary>
-        [Required(ErrorMessage = "Description is required")]
+        [Required(ErrorMessage = "Description обязательное поле")]
         public string Description { get; set; }
 
         /// <summary>
         /// Цена
         /// </summary>
-        [Range(0.01, double.MaxValue, ErrorMessage = "Price must be higher or equals than 0.01")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Price должен быть больше или равен 0.01")]
         public decimal Price { get; set; }
 
         /// <summary>
         /// Скидка
         /// </summary>
-        [Range(0, 100, ErrorMessage = "Discount must be higher or equals than 0")]
+        [Range(0, 100, ErrorMessage = "Discount должен быть больше или равен 0")]
         public decimal Discount { get; set; }
 
         /// <summary>
         /// Количество
         /// </summary>
-        [Range(0, int.MaxValue, ErrorMessage = "Count must be higher or equals than 0")]
+        [Range(0, int.MaxValue, ErrorMessage = "Count должен быть больше или равен 0")]
         public int Count { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Trade.Domain
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Trade.Domain
 {
     /// <summary>
     /// DTO изменения заказа
@@ -8,26 +10,24 @@
         /// <summary>
         /// ID
         /// </summary>
+        [Required(ErrorMessage = "Id обязательное поле")]
         public Guid Id { get; set; }
 
         /// <summary>
         /// ID пользователя
         /// </summary>
+        [Required(ErrorMessage = "UserId обязательное поле")]
         public Guid UserId { get; set; }
 
         /// <summary>
         /// ID использованного адреса
         /// </summary>
+        [Required(ErrorMessage = "AddressId обязательное поле")]
         public Guid AddressId { get; set; }
 
         /// <summary>
         /// Комментарий к заказу
         /// </summary>
-        public string Comment { get; set; }
-
-        /// <summary>
-        /// Статус
-        /// </summary>
-        public OrderStatus Status { get; set; }
+        public string Comment { get; set; } = string.Empty;
     }
 }

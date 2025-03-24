@@ -14,6 +14,9 @@ namespace Trade.Api
     {
         private readonly ProductsRepository _productsRepository = new(_context);
 
+        private readonly string PRODUCT_ID_ERROR_MESSAGE = "ID в URL и в теле запроса не совпадают";
+        private readonly string PRODUCT_NOT_FOUND_ERROR_MESSAGE = "Товар по такому ID не найден";
+
         /// <summary>
         /// Получает список товаров
         /// </summary>
@@ -35,7 +38,14 @@ namespace Trade.Api
         [HttpGet("{productId}")]
         public async Task<ActionResult<Product?>> GetProduct(Guid productId)
         {
-            return await _productsRepository.GetById(productId);
+            Product? product = await _productsRepository.GetById(productId);
+
+            if (product != null)
+            {
+                return product;
+            }
+
+            return NotFound(PRODUCT_NOT_FOUND_ERROR_MESSAGE);
         }
 
         /// <summary>
@@ -59,20 +69,21 @@ namespace Trade.Api
         /// <param name="changeProduct">Новые данные для товара</param>
         /// <returns>Объект товара</returns>
         /// <response code="200">Возвращает обновленный объект товара</response>
+        /// <response code="400">ID в URL и в теле запроса не совпадают</response>
         /// <response code="404">Товар по такому ID не найден</response>
         [HttpPut("{productId}")]
         public async Task<ActionResult<Product?>> ChangeProduct(Guid productId, [FromBody] ChangeProductDTO changeProduct)
         {
             if (productId != changeProduct.Id)
             {
-                return BadRequest(productId);
+                return BadRequest(PRODUCT_ID_ERROR_MESSAGE);
             }
 
             Product? product = await _productsRepository.Change(changeProduct);
 
             if (product == null)
             {
-                return NotFound();
+                return NotFound(PRODUCT_NOT_FOUND_ERROR_MESSAGE);
             }
 
             return Ok(product);
@@ -96,7 +107,7 @@ namespace Trade.Api
                 return NoContent();
             }
 
-            return NotFound();
+            return NotFound(PRODUCT_NOT_FOUND_ERROR_MESSAGE);
         }
     }
 }

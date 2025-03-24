@@ -59,6 +59,21 @@ namespace Trade.Infrastructure.Repositories
             return null;
         }
 
+        public async Task<Product?> ChangeCount(Guid productId, int newCount)
+        {
+            if (newCount < 0) return null;
+
+            Product? existProduct = await _context.Products.FindAsync(productId);
+
+            if (existProduct == null) return null;
+
+            existProduct.Count = newCount;
+
+            await _context.SaveChangesAsync();
+
+            return existProduct;
+        }
+
         public async Task Delete(Guid productId)
         {
             Product? product = await _context.Products.FindAsync(productId);

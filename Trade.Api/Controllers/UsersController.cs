@@ -14,6 +14,9 @@ namespace Trade.Api.Controllers
     {
         private readonly UsersRepository _usersRepository = new (_context);
 
+        private readonly string USER_NOT_FOUND_ERROR_MESSAGE = "Пользователь по такому ID не найден";
+        private readonly string USER_ID_ERROR_MESSAGE = "ID в URL и в теле запроса не совпадают";
+
         /// <summary>
         /// Получает список пользователей
         /// </summary>
@@ -35,7 +38,14 @@ namespace Trade.Api.Controllers
         [HttpGet("{userId}")]
         public async Task<ActionResult<User?>> GetUser(Guid userId)
         {
-            return await _usersRepository.GetById(userId);
+            User? user = await _usersRepository.GetById(userId);
+
+            if (user != null)
+            {
+                return user;
+            }
+
+            return NotFound(USER_NOT_FOUND_ERROR_MESSAGE);
         }
 
         /// <summary>
@@ -65,14 +75,14 @@ namespace Trade.Api.Controllers
         {
             if (userId != changeUser.Id)
             {
-                return BadRequest(userId);
+                return BadRequest(USER_ID_ERROR_MESSAGE);
             }
 
             User? updatedUser = await _usersRepository.Update(changeUser);
 
             if (updatedUser == null)
             {
-                return NotFound();
+                return NotFound(USER_NOT_FOUND_ERROR_MESSAGE);
             }
 
             return Ok(updatedUser);
@@ -96,7 +106,7 @@ namespace Trade.Api.Controllers
                 return NoContent();
             }
 
-            return NotFound();
+            return NotFound(USER_NOT_FOUND_ERROR_MESSAGE);
         }
     }
 }

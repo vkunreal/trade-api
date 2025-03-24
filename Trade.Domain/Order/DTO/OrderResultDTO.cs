@@ -25,7 +25,12 @@
         /// <summary>
         /// Статус
         /// </summary>
-        public OrderStatus Status { get; set; }
+        public string Status { get; set; }
+
+        /// <summary>
+        /// Итоговая цена
+        /// </summary>
+        public decimal TotalPrice { get; set; }
 
         /// <summary>
         /// Дата создания

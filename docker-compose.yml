@@ -31,18 +31,18 @@ services:
     networks:
       - postgres
 
-  trade.pgadmin:
-    image: dpage/pgadmin4:latest
-    container_name: trade.pgadmin
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    ports:
-      - "8080:80"
-    depends_on:
-      - trade.database
-    networks:
-      - postgres
+  # trade.pgadmin:
+  #   image: dpage/pgadmin4:latest
+  #   container_name: trade.pgadmin
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: admin@example.com
+  #     PGADMIN_DEFAULT_PASSWORD: admin
+  #   ports:
+  #     - "8080:80"
+  #   depends_on:
+  #     - trade.database
+  #   networks:
+  #     - postgres
 
 volumes:
   trade_db:
