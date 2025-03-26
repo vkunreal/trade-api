@@ -133,9 +133,9 @@ namespace Trade.Api.Controllers
         /// <response code="200">Возвращает обновленный объект заказа</response>
         /// <response code="404">Заказ по такому ID не найден</response>
         [HttpPut("{orderId}/updateStatus")]
-        public async Task<ActionResult<OrderResultDTO?>> UpdateOrderStatus(Guid orderId, [FromBody] OrderStatus orderStatus)
+        public async Task<ActionResult<OrderResultDTO?>> UpdateOrderStatus(Guid orderId, [FromBody] ChangeOrderStatus orderStatus)
         {
-            OrderResultDTO? order = await _ordersRepository.UpdateOrderStatus(orderId, orderStatus);
+            OrderResultDTO? order = await _ordersRepository.UpdateOrderStatus(orderId, orderStatus.Status);
 
             if (order != null)
             {

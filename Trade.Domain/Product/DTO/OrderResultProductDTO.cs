@@ -28,6 +28,11 @@
         public decimal Discount { get; set; }
 
         /// <summary>
+        /// Количество товара
+        /// </summary>
+        public int Quantity { get; set; }
+
+        /// <summary>
         /// Итоговая цена
         /// </summary>
         public decimal TotalPrice => Math.Round(Price * (1 - Discount / 100), 2);}

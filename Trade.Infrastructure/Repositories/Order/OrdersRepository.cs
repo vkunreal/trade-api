@@ -14,7 +14,6 @@ namespace Trade.Infrastructure.Repositories
 
         public async Task<List<OrderResultDTO>> GetAll()
         {
-
             return await _context.Orders
                 .Include(order => order.Address)
                 .Include(order => order.User)
@@ -42,7 +41,8 @@ namespace Trade.Infrastructure.Repositories
                         Title = orderItem.Product.Title,
                         Description = orderItem.Product.Description,
                         Price = orderItem.Product.Price,
-                        Discount = orderItem.Product.Discount
+                        Discount = orderItem.Product.Discount,
+                        Quantity = orderItem.Quantity
                     }).ToList()
                 }).ToListAsync();
         }
@@ -75,13 +75,14 @@ namespace Trade.Infrastructure.Repositories
                 TotalPrice = order.TotalPrice,
                 CreatedAt = order.CreatedAt,
                 UpdatedAt = order.UpdatedAt,
-                Products = order.OrderItems.Select(oi => new OrderResultProductDTO
+                Products = order.OrderItems.Select(orderItem => new OrderResultProductDTO
                 {
-                    Id = oi.Product.Id,
-                    Title = oi.Product.Title,
-                    Description = oi.Product.Description,
-                    Price = oi.Product.Price,
-                    Discount = oi.Product.Discount
+                    Id = orderItem.Product.Id,
+                    Title = orderItem.Product.Title,
+                    Description = orderItem.Product.Description,
+                    Price = orderItem.Product.Price,
+                    Discount = orderItem.Product.Discount,
+                    Quantity = orderItem.Quantity
                 }).ToList()
             };
         }

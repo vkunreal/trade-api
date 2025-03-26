@@ -35,7 +35,7 @@ namespace Trade.Domain
         /// <summary>
         /// Итоговая цена
         /// </summary>
-        public decimal TotalPrice => OrderItems.Sum(oi => oi.Product.TotalPrice);
+        public decimal TotalPrice => OrderItems.Sum(oi => oi.Product.TotalPrice * oi.Quantity);
 
         /// <summary>
         /// Дата создания
