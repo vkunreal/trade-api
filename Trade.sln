@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trade.Infrastructure", "Tra
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{435CB337-95B2-4422-BAB1-334E1D91DECF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trade.Test", "..\Trade.Test\Trade.Test.csproj", "{CE88F342-A645-4B1A-ADF4-C37ABEB39F5B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trade.Test", "Trade.Test\Trade.Test.csproj", "{0292116D-0CE0-4706-B0ED-18BD1669415C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,10 @@ Global
 		{435CB337-95B2-4422-BAB1-334E1D91DECF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{435CB337-95B2-4422-BAB1-334E1D91DECF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{435CB337-95B2-4422-BAB1-334E1D91DECF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CE88F342-A645-4B1A-ADF4-C37ABEB39F5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CE88F342-A645-4B1A-ADF4-C37ABEB39F5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CE88F342-A645-4B1A-ADF4-C37ABEB39F5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CE88F342-A645-4B1A-ADF4-C37ABEB39F5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0292116D-0CE0-4706-B0ED-18BD1669415C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0292116D-0CE0-4706-B0ED-18BD1669415C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0292116D-0CE0-4706-B0ED-18BD1669415C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0292116D-0CE0-4706-B0ED-18BD1669415C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
